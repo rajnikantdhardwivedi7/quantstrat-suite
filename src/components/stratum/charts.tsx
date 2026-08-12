@@ -57,9 +57,9 @@ export function LineSeriesChart({
         <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "var(--color-muted-foreground)" }} />
         {series.map((s, i) =>
           areaFirst && i === 0 ? (
-            <Area key={s.key} type="monotone" dataKey={s.key} name={s.label} stroke={s.color} fill={s.color} fillOpacity={0.12} strokeWidth={1.6} dot={false} />
+            <Area isAnimationActive={false} key={s.key} type="monotone" dataKey={s.key} name={s.label} stroke={s.color} fill={s.color} fillOpacity={0.12} strokeWidth={1.6} dot={false} />
           ) : (
-            <Line key={s.key} type="monotone" dataKey={s.key} name={s.label} stroke={s.color} strokeWidth={1.4} dot={false} />
+            <Line isAnimationActive={false} key={s.key} type="monotone" dataKey={s.key} name={s.label} stroke={s.color} strokeWidth={1.4} dot={false} />
           ),
         )}
       </Chart>
@@ -75,7 +75,7 @@ export function DrawdownChart({ data, height = 180 }: { data: { timestamp: strin
         <XAxis dataKey="timestamp" tick={AXIS} tickFormatter={thinDates(data.length)} axisLine={{ stroke: GRID }} tickLine={false} />
         <YAxis tick={AXIS} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} axisLine={false} tickLine={false} width={56} />
         <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${(v * 100).toFixed(2)}%`} />
-        <Area type="monotone" dataKey="drawdown" stroke="var(--color-negative)" fill="var(--color-negative)" fillOpacity={0.18} strokeWidth={1.2} dot={false} />
+        <Area isAnimationActive={false} type="monotone" dataKey="drawdown" stroke="var(--color-negative)" fill="var(--color-negative)" fillOpacity={0.18} strokeWidth={1.2} dot={false} />
       </AreaChart>
     </ResponsiveContainer>
   );
@@ -97,7 +97,7 @@ export function HorizontalBarChart({
         <XAxis type="number" tick={AXIS} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} axisLine={false} tickLine={false} />
         <YAxis type="category" dataKey="label" tick={AXIS} width={140} axisLine={false} tickLine={false} />
         <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${(v * 100).toFixed(2)}%`} />
-        <Bar dataKey="value" fill={color} radius={[0, 2, 2, 0]} />
+        <Bar isAnimationActive={false} dataKey="value" fill={color} radius={[0, 2, 2, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -112,7 +112,7 @@ export function WeightsChart({ data, height = 260 }: { data: { label: string; va
         <XAxis dataKey="label" tick={AXIS} axisLine={{ stroke: GRID }} tickLine={false} />
         <YAxis tick={AXIS} tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} axisLine={false} tickLine={false} width={48} />
         <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${(v * 100).toFixed(2)}%`} />
-        <Bar dataKey="value" radius={[2, 2, 0, 0]}>
+        <Bar isAnimationActive={false} dataKey="value" radius={[2, 2, 0, 0]}>
           {data.map((_, i) => (
             <Cell key={i} fill={palette[i % palette.length]} />
           ))}
@@ -155,7 +155,7 @@ export function PredictionScatter({
         <ReferenceLine x={0} stroke={GRID} />
         <ReferenceLine y={0} stroke={GRID} />
         <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${(v * 100).toFixed(2)}%`} />
-        <Scatter data={data} fill="var(--color-primary)" fillOpacity={0.55} shape="circle" />
+        <Scatter isAnimationActive={false} data={data} fill="var(--color-primary)" fillOpacity={0.55} shape="circle" />
       </ScatterChart>
     </ResponsiveContainer>
   );
