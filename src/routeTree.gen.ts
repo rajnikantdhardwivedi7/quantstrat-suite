@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BacktestRouteImport } from './routes/backtest'
+import { Route as ExperimentsRouteImport } from './routes/experiments'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as MarketRouteImport } from './routes/market'
 import { Route as ModelsRouteImport } from './routes/models'
@@ -27,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const BacktestRoute = BacktestRouteImport.update({
   id: '/backtest',
   path: '/backtest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperimentsRoute = ExperimentsRouteImport.update({
+  id: '/experiments',
+  path: '/experiments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FeaturesRoute = FeaturesRouteImport.update({
@@ -68,6 +74,7 @@ const SignalsRoute = SignalsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/backtest': typeof BacktestRoute
+  '/experiments': typeof ExperimentsRoute
   '/features': typeof FeaturesRoute
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/backtest': typeof BacktestRoute
+  '/experiments': typeof ExperimentsRoute
   '/features': typeof FeaturesRoute
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/backtest': typeof BacktestRoute
+  '/experiments': typeof ExperimentsRoute
   '/features': typeof FeaturesRoute
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/backtest'
+    | '/experiments'
     | '/features'
     | '/market'
     | '/models'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/backtest'
+    | '/experiments'
     | '/features'
     | '/market'
     | '/models'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/backtest'
+    | '/experiments'
     | '/features'
     | '/market'
     | '/models'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BacktestRoute: typeof BacktestRoute
+  ExperimentsRoute: typeof ExperimentsRoute
   FeaturesRoute: typeof FeaturesRoute
   MarketRoute: typeof MarketRoute
   ModelsRoute: typeof ModelsRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/backtest'
       fullPath: '/backtest'
       preLoaderRoute: typeof BacktestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experiments': {
+      id: '/experiments'
+      path: '/experiments'
+      fullPath: '/experiments'
+      preLoaderRoute: typeof ExperimentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/features': {
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BacktestRoute: BacktestRoute,
+  ExperimentsRoute: ExperimentsRoute,
   FeaturesRoute: FeaturesRoute,
   MarketRoute: MarketRoute,
   ModelsRoute: ModelsRoute,
