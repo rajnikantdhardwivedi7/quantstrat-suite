@@ -71,11 +71,11 @@ function FeatureExplorer() {
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
         <Panel title="Trend and momentum features" description="Standardised at model time; shown here in raw units.">
           <LineSeriesChart
-            data={trace(["mom_21", "mom_63"])}
+            data={trace(["ret_21d", "momentum_63d"])}
             xKey="timestamp"
             series={[
-              { key: "mom_21", label: "21-bar momentum", color: "var(--color-chart-1)" },
-              { key: "mom_63", label: "63-bar momentum", color: "var(--color-chart-3)" },
+              { key: "ret_21d", label: "21-bar return", color: "var(--color-chart-1)" },
+              { key: "momentum_63d", label: "63-bar momentum", color: "var(--color-chart-3)" },
             ]}
             yTickFormatter={(v) => `${(v * 100).toFixed(0)}%`}
             height={220}
@@ -83,11 +83,11 @@ function FeatureExplorer() {
         </Panel>
         <Panel title="Volatility features" description="Realised volatility over two horizons.">
           <LineSeriesChart
-            data={trace(["vol_21", "vol_63"])}
+            data={trace(["vol_21d", "atr_14_pct"])}
             xKey="timestamp"
             series={[
-              { key: "vol_21", label: "21-bar vol", color: "var(--color-chart-2)" },
-              { key: "vol_63", label: "63-bar vol", color: "var(--color-chart-4)" },
+              { key: "vol_21d", label: "21-bar realised vol", color: "var(--color-chart-2)" },
+              { key: "atr_14_pct", label: "ATR(14) % of price", color: "var(--color-chart-4)" },
             ]}
             yTickFormatter={(v) => `${(v * 100).toFixed(0)}%`}
             height={220}
@@ -102,13 +102,13 @@ function FeatureExplorer() {
             height={220}
           />
         </Panel>
-        <Panel title="Bollinger %B and z-score" description="Position of price within its trailing distribution.">
+        <Panel title="Bollinger %B and return skew" description="Position of price within its trailing distribution, and distributional shape.">
           <LineSeriesChart
-            data={trace(["bollinger_pctb", "zscore_20"])}
+            data={trace(["bollinger_pct_b_20", "skew_63d"])}
             xKey="timestamp"
             series={[
-              { key: "bollinger_pctb", label: "%B", color: "var(--color-chart-5)" },
-              { key: "zscore_20", label: "z-score 20", color: "var(--color-chart-2)" },
+              { key: "bollinger_pct_b_20", label: "%B", color: "var(--color-chart-5)" },
+              { key: "skew_63d", label: "63-bar skew", color: "var(--color-chart-2)" },
             ]}
             yTickFormatter={(v) => v.toFixed(1)}
             height={220}
