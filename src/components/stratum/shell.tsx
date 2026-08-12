@@ -88,9 +88,10 @@ export function Shell({
                   key={n.to}
                   to={n.to}
                   activeOptions={{ exact: n.to === "/" }}
-                  className="rounded-sm border border-border px-2 py-1 text-xs text-muted-foreground"
+                  className="press rounded-sm border border-border px-2 py-1 text-xs text-muted-foreground"
                   activeProps={{ className: "border-primary text-primary" }}
                 >
+
                   {n.label}
                 </Link>
               ))}
