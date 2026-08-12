@@ -14,6 +14,7 @@ import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as MarketRouteImport } from './routes/market'
 import { Route as ModelsRouteImport } from './routes/models'
 import { Route as PredictionsRouteImport } from './routes/predictions'
+import { Route as SignalsRouteImport } from './routes/signals'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const PredictionsRoute = PredictionsRouteImport.update({
   path: '/predictions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignalsRoute = SignalsRouteImport.update({
+  id: '/signals',
+  path: '/signals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
   '/predictions': typeof PredictionsRoute
+  '/signals': typeof SignalsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
   '/predictions': typeof PredictionsRoute
+  '/signals': typeof SignalsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,22 @@ export interface FileRoutesById {
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
   '/predictions': typeof PredictionsRoute
+  '/signals': typeof SignalsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/features' | '/market' | '/models' | '/predictions'
+  fullPaths:
+    '/' | '/features' | '/market' | '/models' | '/predictions' | '/signals'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/features' | '/market' | '/models' | '/predictions'
-  id: '__root__' | '/' | '/features' | '/market' | '/models' | '/predictions'
+  to: '/' | '/features' | '/market' | '/models' | '/predictions' | '/signals'
+  id:
+    | '__root__'
+    | '/'
+    | '/features'
+    | '/market'
+    | '/models'
+    | '/predictions'
+    | '/signals'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   MarketRoute: typeof MarketRoute
   ModelsRoute: typeof ModelsRoute
   PredictionsRoute: typeof PredictionsRoute
+  SignalsRoute: typeof SignalsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PredictionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signals': {
+      id: '/signals'
+      path: '/signals'
+      fullPath: '/signals'
+      preLoaderRoute: typeof SignalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketRoute: MarketRoute,
   ModelsRoute: ModelsRoute,
   PredictionsRoute: PredictionsRoute,
+  SignalsRoute: SignalsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
