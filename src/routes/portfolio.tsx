@@ -87,10 +87,10 @@ function Portfolio() {
             items={[
               ["Solver", "Projected gradient descent onto the constraint set"],
               ["Long only", minVar.constraints.longOnly ? "Yes" : "No"],
-              ["Weights sum to", fmtNum(minVar.constraints.sumTo, 2)],
+              ["Weights sum to", "1.00 (fully invested)"],
               ["Max weight", fmtPct(minVar.constraints.maxWeight)],
               ["Min weight", fmtPct(minVar.constraints.minWeight)],
-              ["Risk aversion", fmtNum(minVar.constraints.riskAversion, 2)],
+
               ["Covariance estimator", "Sample covariance of daily log returns, annualised by 252"],
               ["Expected returns", "Sample mean of daily log returns, annualised by 252"],
               ["Not modelled", "Transaction costs of rebalancing to these weights, borrow limits, factor exposures"],
