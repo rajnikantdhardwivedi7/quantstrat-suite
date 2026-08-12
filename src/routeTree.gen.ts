@@ -14,6 +14,7 @@ import { Route as BacktestRouteImport } from './routes/backtest'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as MarketRouteImport } from './routes/market'
 import { Route as ModelsRouteImport } from './routes/models'
+import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as SignalsRouteImport } from './routes/signals'
 
@@ -42,6 +43,11 @@ const ModelsRoute = ModelsRouteImport.update({
   path: '/models',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortfolioRoute = PortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PredictionsRoute = PredictionsRouteImport.update({
   id: '/predictions',
   path: '/predictions',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/features': typeof FeaturesRoute
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
+  '/portfolio': typeof PortfolioRoute
   '/predictions': typeof PredictionsRoute
   '/signals': typeof SignalsRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/features': typeof FeaturesRoute
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
+  '/portfolio': typeof PortfolioRoute
   '/predictions': typeof PredictionsRoute
   '/signals': typeof SignalsRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/features': typeof FeaturesRoute
   '/market': typeof MarketRoute
   '/models': typeof ModelsRoute
+  '/portfolio': typeof PortfolioRoute
   '/predictions': typeof PredictionsRoute
   '/signals': typeof SignalsRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/market'
     | '/models'
+    | '/portfolio'
     | '/predictions'
     | '/signals'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/market'
     | '/models'
+    | '/portfolio'
     | '/predictions'
     | '/signals'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/market'
     | '/models'
+    | '/portfolio'
     | '/predictions'
     | '/signals'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   FeaturesRoute: typeof FeaturesRoute
   MarketRoute: typeof MarketRoute
   ModelsRoute: typeof ModelsRoute
+  PortfolioRoute: typeof PortfolioRoute
   PredictionsRoute: typeof PredictionsRoute
   SignalsRoute: typeof SignalsRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModelsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/predictions': {
       id: '/predictions'
       path: '/predictions'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   FeaturesRoute: FeaturesRoute,
   MarketRoute: MarketRoute,
   ModelsRoute: ModelsRoute,
+  PortfolioRoute: PortfolioRoute,
   PredictionsRoute: PredictionsRoute,
   SignalsRoute: SignalsRoute,
 }
