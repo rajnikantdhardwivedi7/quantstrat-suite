@@ -66,7 +66,7 @@ export function Shell({
         </aside>
 
         <main className="min-w-0 flex-1">
-          <header className="grid-backdrop border-b border-border bg-surface/60">
+          <header className="glass-chrome sticky top-0 z-30">
             <div className="px-5 py-6 lg:px-8">
               <div className="lg:hidden">
                 <div className="font-mono text-sm font-semibold tracking-[0.2em]">STRATUM</div>
