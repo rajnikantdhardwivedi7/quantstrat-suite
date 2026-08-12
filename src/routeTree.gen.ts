@@ -16,6 +16,7 @@ import { Route as MarketRouteImport } from './routes/market'
 import { Route as ModelsRouteImport } from './routes/models'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as PredictionsRouteImport } from './routes/predictions'
+import { Route as RiskRouteImport } from './routes/risk'
 import { Route as SignalsRouteImport } from './routes/signals'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const PredictionsRoute = PredictionsRouteImport.update({
   path: '/predictions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RiskRoute = RiskRouteImport.update({
+  id: '/risk',
+  path: '/risk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignalsRoute = SignalsRouteImport.update({
   id: '/signals',
   path: '/signals',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/models': typeof ModelsRoute
   '/portfolio': typeof PortfolioRoute
   '/predictions': typeof PredictionsRoute
+  '/risk': typeof RiskRoute
   '/signals': typeof SignalsRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/models': typeof ModelsRoute
   '/portfolio': typeof PortfolioRoute
   '/predictions': typeof PredictionsRoute
+  '/risk': typeof RiskRoute
   '/signals': typeof SignalsRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/models': typeof ModelsRoute
   '/portfolio': typeof PortfolioRoute
   '/predictions': typeof PredictionsRoute
+  '/risk': typeof RiskRoute
   '/signals': typeof SignalsRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/portfolio'
     | '/predictions'
+    | '/risk'
     | '/signals'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/portfolio'
     | '/predictions'
+    | '/risk'
     | '/signals'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/models'
     | '/portfolio'
     | '/predictions'
+    | '/risk'
     | '/signals'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   ModelsRoute: typeof ModelsRoute
   PortfolioRoute: typeof PortfolioRoute
   PredictionsRoute: typeof PredictionsRoute
+  RiskRoute: typeof RiskRoute
   SignalsRoute: typeof SignalsRoute
 }
 
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PredictionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/risk': {
+      id: '/risk'
+      path: '/risk'
+      fullPath: '/risk'
+      preLoaderRoute: typeof RiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signals': {
       id: '/signals'
       path: '/signals'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModelsRoute: ModelsRoute,
   PortfolioRoute: PortfolioRoute,
   PredictionsRoute: PredictionsRoute,
+  RiskRoute: RiskRoute,
   SignalsRoute: SignalsRoute,
 }
 export const routeTree = rootRouteImport
