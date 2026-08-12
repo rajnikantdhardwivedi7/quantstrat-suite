@@ -21,9 +21,9 @@ export class RiskCalculationError extends Error {
 export function simpleReturns(prices: number[]): number[] {
   const out: number[] = [];
   for (let i = 1; i < prices.length; i++) {
-    const prev = prices[i - 1];
+    const prev = prices[i - 1]!;
     if (prev <= 0) throw new RiskCalculationError("Non-positive price in return calculation");
-    out.push(prices[i] / prev - 1);
+    out.push(prices[i]! / prev - 1);
   }
   return out;
 }
@@ -76,8 +76,8 @@ export function autocorrelation(xs: number[], lag: number): number {
   let num = 0;
   let den = 0;
   for (let i = 0; i < xs.length; i++) {
-    den += (xs[i] - m) ** 2;
-    if (i >= lag) num += (xs[i] - m) * (xs[i - lag] - m);
+    den += (xs[i]! - m) ** 2;
+    if (i >= lag) num += (xs[i]! - m) * (xs[i - lag]! - m);
   }
   return den === 0 ? 0 : num / den;
 }
@@ -134,7 +134,7 @@ export interface DrawdownResult {
 
 /** Peak-to-trough drawdown of an equity curve. */
 export function drawdown(equity: number[]): DrawdownResult {
-  let peak = equity.length ? equity[0] : NaN;
+  let peak = equity.length ? equity[0]! : NaN;
   let peakIdx = 0;
   let best = { maxDrawdown: 0, peakIndex: 0, troughIndex: 0 };
   const series: number[] = [];
@@ -164,7 +164,7 @@ export function historicalVaR(returns: number[], alpha = 0.95): number {
   if (returns.length === 0) return NaN;
   const sorted = [...returns].sort((a, b) => a - b);
   const idx = Math.min(sorted.length - 1, Math.max(0, Math.floor((1 - alpha) * sorted.length)));
-  return -sorted[idx];
+  return -sorted[idx]!;
 }
 
 /** Parametric (Gaussian) VaR. Understates tail risk for fat-tailed returns. */
@@ -184,10 +184,10 @@ export function conditionalVaR(returns: number[], alpha = 0.95): number {
 /** Acklam-style rational approximation of the standard normal quantile. */
 export function normalQuantile(p: number): number {
   if (p <= 0 || p >= 1) return NaN;
-  const a = [-39.6968302866538, 220.946098424521, -275.928510446969, 138.357751867269, -30.6647980661472, 2.50662827745924];
-  const b = [-54.4760987982241, 161.585836858041, -155.698979859887, 66.8013118877197, -13.2806815528857];
-  const c = [-7.78489400243029e-3, -0.322396458041136, -2.40075827716184, -2.54973253934373, 4.37466414146497, 2.93816398269878];
-  const d = [7.78469570904146e-3, 0.32246712907004, 2.445134137143, 3.75440866190742];
+  const a = ([-39.6968302866538, 220.946098424521, -275.928510446969, 138.357751867269, -30.6647980661472, 2.50662827745924] as const);
+  const b = ([-54.4760987982241, 161.585836858041, -155.698979859887, 66.8013118877197, -13.2806815528857] as const);
+  const c = ([-7.78489400243029e-3, -0.322396458041136, -2.40075827716184, -2.54973253934373, 4.37466414146497, 2.93816398269878] as const);
+  const d = ([7.78469570904146e-3, 0.32246712907004, 2.445134137143, 3.75440866190742] as const);
   const pLow = 0.02425;
   if (p < pLow) {
     const q = Math.sqrt(-2 * Math.log(p));
@@ -206,7 +206,7 @@ export function covariance(x: number[], y: number[]): number {
   const mx = mean(x.slice(0, n));
   const my = mean(y.slice(0, n));
   let s = 0;
-  for (let i = 0; i < n; i++) s += (x[i] - mx) * (y[i] - my);
+  for (let i = 0; i < n; i++) s += (x[i]! - mx) * (y[i]! - my);
   return s / (n - 1);
 }
 
