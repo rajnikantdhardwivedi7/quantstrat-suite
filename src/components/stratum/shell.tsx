@@ -50,11 +50,12 @@ export function Shell({
                     key={n.to}
                     to={n.to}
                     activeOptions={{ exact: n.to === "/" }}
-                    className="block rounded-sm px-2 py-1.5 text-[13px] text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+                    className="press block rounded-sm px-2 py-1.5 text-[13px] text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
                     activeProps={{ className: "bg-sidebar-accent text-primary" }}
                   >
                     {n.label}
                   </Link>
+
                 ))}
               </div>
             ))}
