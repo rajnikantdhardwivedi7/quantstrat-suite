@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BacktestRouteImport } from './routes/backtest'
+import { Route as ExperimentsRouteImport } from './routes/experiments'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as MarketRouteImport } from './routes/market'
+import { Route as ModelsRouteImport } from './routes/models'
+import { Route as PortfolioRouteImport } from './routes/portfolio'
+import { Route as PredictionsRouteImport } from './routes/predictions'
+import { Route as RiskRouteImport } from './routes/risk'
+import { Route as SignalsRouteImport } from './routes/signals'
+import { Route as SystemRouteImport } from './routes/system'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BacktestRoute = BacktestRouteImport.update({
+  id: '/backtest',
+  path: '/backtest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperimentsRoute = ExperimentsRouteImport.update({
+  id: '/experiments',
+  path: '/experiments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketRoute = MarketRouteImport.update({
+  id: '/market',
+  path: '/market',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModelsRoute = ModelsRouteImport.update({
+  id: '/models',
+  path: '/models',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioRoute = PortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PredictionsRoute = PredictionsRouteImport.update({
+  id: '/predictions',
+  path: '/predictions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RiskRoute = RiskRouteImport.update({
+  id: '/risk',
+  path: '/risk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignalsRoute = SignalsRouteImport.update({
+  id: '/signals',
+  path: '/signals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SystemRoute = SystemRouteImport.update({
+  id: '/system',
+  path: '/system',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/backtest': typeof BacktestRoute
+  '/experiments': typeof ExperimentsRoute
+  '/features': typeof FeaturesRoute
+  '/market': typeof MarketRoute
+  '/models': typeof ModelsRoute
+  '/portfolio': typeof PortfolioRoute
+  '/predictions': typeof PredictionsRoute
+  '/risk': typeof RiskRoute
+  '/signals': typeof SignalsRoute
+  '/system': typeof SystemRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/backtest': typeof BacktestRoute
+  '/experiments': typeof ExperimentsRoute
+  '/features': typeof FeaturesRoute
+  '/market': typeof MarketRoute
+  '/models': typeof ModelsRoute
+  '/portfolio': typeof PortfolioRoute
+  '/predictions': typeof PredictionsRoute
+  '/risk': typeof RiskRoute
+  '/signals': typeof SignalsRoute
+  '/system': typeof SystemRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/backtest': typeof BacktestRoute
+  '/experiments': typeof ExperimentsRoute
+  '/features': typeof FeaturesRoute
+  '/market': typeof MarketRoute
+  '/models': typeof ModelsRoute
+  '/portfolio': typeof PortfolioRoute
+  '/predictions': typeof PredictionsRoute
+  '/risk': typeof RiskRoute
+  '/signals': typeof SignalsRoute
+  '/system': typeof SystemRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/backtest'
+    | '/experiments'
+    | '/features'
+    | '/market'
+    | '/models'
+    | '/portfolio'
+    | '/predictions'
+    | '/risk'
+    | '/signals'
+    | '/system'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/backtest'
+    | '/experiments'
+    | '/features'
+    | '/market'
+    | '/models'
+    | '/portfolio'
+    | '/predictions'
+    | '/risk'
+    | '/signals'
+    | '/system'
+  id:
+    | '__root__'
+    | '/'
+    | '/backtest'
+    | '/experiments'
+    | '/features'
+    | '/market'
+    | '/models'
+    | '/portfolio'
+    | '/predictions'
+    | '/risk'
+    | '/signals'
+    | '/system'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BacktestRoute: typeof BacktestRoute
+  ExperimentsRoute: typeof ExperimentsRoute
+  FeaturesRoute: typeof FeaturesRoute
+  MarketRoute: typeof MarketRoute
+  ModelsRoute: typeof ModelsRoute
+  PortfolioRoute: typeof PortfolioRoute
+  PredictionsRoute: typeof PredictionsRoute
+  RiskRoute: typeof RiskRoute
+  SignalsRoute: typeof SignalsRoute
+  SystemRoute: typeof SystemRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +182,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/backtest': {
+      id: '/backtest'
+      path: '/backtest'
+      fullPath: '/backtest'
+      preLoaderRoute: typeof BacktestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experiments': {
+      id: '/experiments'
+      path: '/experiments'
+      fullPath: '/experiments'
+      preLoaderRoute: typeof ExperimentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market': {
+      id: '/market'
+      path: '/market'
+      fullPath: '/market'
+      preLoaderRoute: typeof MarketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/models': {
+      id: '/models'
+      path: '/models'
+      fullPath: '/models'
+      preLoaderRoute: typeof ModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/predictions': {
+      id: '/predictions'
+      path: '/predictions'
+      fullPath: '/predictions'
+      preLoaderRoute: typeof PredictionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/risk': {
+      id: '/risk'
+      path: '/risk'
+      fullPath: '/risk'
+      preLoaderRoute: typeof RiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signals': {
+      id: '/signals'
+      path: '/signals'
+      fullPath: '/signals'
+      preLoaderRoute: typeof SignalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/system': {
+      id: '/system'
+      path: '/system'
+      fullPath: '/system'
+      preLoaderRoute: typeof SystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BacktestRoute: BacktestRoute,
+  ExperimentsRoute: ExperimentsRoute,
+  FeaturesRoute: FeaturesRoute,
+  MarketRoute: MarketRoute,
+  ModelsRoute: ModelsRoute,
+  PortfolioRoute: PortfolioRoute,
+  PredictionsRoute: PredictionsRoute,
+  RiskRoute: RiskRoute,
+  SignalsRoute: SignalsRoute,
+  SystemRoute: SystemRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
