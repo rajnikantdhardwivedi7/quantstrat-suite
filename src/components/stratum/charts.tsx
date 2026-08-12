@@ -53,7 +53,7 @@ export function LineSeriesChart({
       <Chart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
         <CartesianGrid stroke={GRID} strokeDasharray="2 4" vertical={false} />
         <XAxis dataKey={xKey} tick={AXIS} tickFormatter={thinDates(data.length)} minTickGap={8} axisLine={{ stroke: GRID }} tickLine={false} />
-        <YAxis tick={AXIS} tickFormatter={yTickFormatter} axisLine={false} tickLine={false} width={56} />
+        <YAxis tick={AXIS} tickFormatter={yTickFormatter ?? ((v: number) => String(v))} axisLine={false} tickLine={false} width={56} />
         <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "var(--color-muted-foreground)" }} />
         {series.map((s, i) =>
           areaFirst && i === 0 ? (
