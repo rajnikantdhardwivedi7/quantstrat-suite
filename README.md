@@ -1,1130 +1,1006 @@
-# QuantStrat Suite
+# QuantStrat
+
+### Layered Intelligence for Quantitative Decision Systems
+
+**QuantStrat** is a quantitative finance research and decision-support platform that combines **financial mathematics, statistical modeling, machine learning, time-series analysis, portfolio optimization, risk management, and software engineering** into a unified research environment.
+
+The system is designed around a complete quantitative research lifecycle:
+
+```text
+Market Data
+     │
+     ▼
+Data Ingestion
+     │
+     ▼
+Validation & Cleaning
+     │
+     ▼
+Feature Engineering
+     │
+     ├──────────────────────┐
+     ▼                      ▼
+Mathematical Analysis   Machine Learning
+     │                      │
+     └───────────┬──────────┘
+                 ▼
+          Signal Generation
+                 │
+                 ▼
+        Portfolio Construction
+                 │
+                 ▼
+            Backtesting
+                 │
+                 ▼
+          Risk Analytics
+                 │
+                 ▼
+       Research Evaluation
+                 │
+        ┌────────┴────────┐
+        ▼                 ▼
+       API            Web Dashboard
+        │
+        ▼
+    MLOps / DevOps
+```
+
+QuantStrat is intended for **quantitative research and education**. It does not provide guaranteed investment returns or financial advice.
+
+---
+
+## Table of Contents
+
+* [Overview](#overview)
+* [Why QuantStrat](#why-quantstrat)
+* [Research Philosophy](#research-philosophy)
+* [Core Capabilities](#core-capabilities)
+* [Architecture](#architecture)
+* [Mathematical Foundation](#mathematical-foundation)
+* [Feature Engineering](#feature-engineering)
+* [Machine Learning](#machine-learning)
+* [Time-Series Validation](#time-series-validation)
+* [Signal Generation](#signal-generation)
+* [Portfolio Optimization](#portfolio-optimization)
+* [Backtesting](#backtesting)
+* [Risk Engine](#risk-engine)
+* [Model Interpretability](#model-interpretability)
+* [Experiment Tracking](#experiment-tracking)
+* [Model Registry](#model-registry)
+* [API](#api)
+* [Dashboard](#dashboard)
+* [Technology Stack](#technology-stack)
+* [Project Structure](#project-structure)
+* [Data Architecture](#data-architecture)
+* [Reproducibility](#reproducibility)
+* [Testing](#testing)
+* [Security](#security)
+* [DevOps](#devops)
+* [Research Workflow](#research-workflow)
+* [Installation](#installation)
+* [Quick Start](#quick-start)
+* [Example Experiment](#example-experiment)
+* [Limitations](#limitations)
+* [Research Roadmap](#research-roadmap)
+* [License](#license)
+
+---
+
+# Overview
+
+QuantStrat was built to explore what happens when a quantitative finance workflow is treated as a **complete software system rather than an isolated machine-learning experiment**.
+
+Traditional quantitative experiments often separate:
+
+* data preparation
+* statistical analysis
+* feature engineering
+* model training
+* portfolio construction
+* backtesting
+* risk analysis
 
-You are a senior quantitative researcher, machine learning engineer, mathematical modeler, Python architect, and DevOps engineer.
+QuantStrat brings these components together.
 
-Your task is to design and implement a complete portfolio-grade quantitative finance platform called:
+The platform allows a research hypothesis to move through a reproducible pipeline:
 
-STRATUM
+```text
+Hypothesis
+    ↓
+Market Data
+    ↓
+Validation
+    ↓
+Feature Construction
+    ↓
+Mathematical / Statistical Analysis
+    ↓
+Model Training
+    ↓
+Time-Series Validation
+    ↓
+Prediction
+    ↓
+Signal
+    ↓
+Portfolio
+    ↓
+Backtest
+    ↓
+Risk Analysis
+    ↓
+Research Report
+```
 
-Tagline:
+This makes it possible to evaluate not only whether a model predicts something, but whether the information it produces remains meaningful after realistic strategy construction and execution assumptions.
 
-"Layered Intelligence for Quantitative Decision Systems"
+---
 
-STRATUM is a quantitative finance research and decision-support system combining:
+# Why QuantStrat?
 
-1. Machine Learning
+Financial markets present a difficult modeling environment.
 
-2. Deep Mathematics
+They are:
 
-3. Statistical Modeling
+* noisy
+* non-stationary
+* adaptive
+* partially observable
+* affected by transaction costs
+* sensitive to regime changes
+* vulnerable to overfitting
 
-4. Risk Analysis
+A model can perform well statistically while producing a poor trading strategy.
 
-5. Portfolio Optimization
+Likewise, a backtest can look impressive while being invalid because of:
 
-6. Time-Series Analysis
+* look-ahead bias
+* data leakage
+* survivorship bias
+* unrealistic execution
+* ignored costs
+* excessive turnover
+* overfitting
+* incorrect timestamp alignment
 
-7. Feature Engineering
+QuantStrat therefore separates two questions:
 
-8. Backtesting
+### 1. Does the model predict effectively?
 
-9. MLOps
+and
 
-10. DevOps
+### 2. Does that predictive information produce useful strategy behavior?
 
-The objective is NOT to create a toy ML notebook.
+These are **not the same problem**.
 
-Build STRATUM as a real, modular software system that can ingest financial market data, engineer features, perform mathematical and statistical analysis, train machine-learning models, generate quantitative signals, evaluate strategies through rigorous backtesting, calculate risk metrics, and expose the results through an API and web dashboard.
+QuantStrat treats them as separate research layers.
 
-IMPORTANT:
+---
 
-This is a research and educational quantitative-finance system.
+# Research Philosophy
 
-Do NOT represent its outputs as guaranteed financial advice.
+QuantStrat follows five principles.
 
-Do NOT fabricate historical data, model performance, returns, Sharpe ratios, accuracy, or backtest results.
+## 1. Correctness
 
-If real market data is unavailable, clearly label generated/demo data as synthetic.
+Financial calculations must be mathematically and temporally correct.
 
-Prevent look-ahead bias, survivorship bias where possible, and data leakage.
+## 2. Reproducibility
 
-Every performance result must be reproducible from code and data.
+A result should be reconstructible from:
 
-==================================================
+* data
+* code
+* configuration
+* dependencies
+* feature definitions
+* model version
+* experiment metadata
 
-1. CORE ARCHITECTURE
+## 3. No Fabricated Results
 
-==================================================
+The platform does not invent:
 
-Use this conceptual architecture:
+* returns
+* Sharpe ratios
+* accuracy
+* profits
+* historical prices
+* datasets
+* institutional affiliations
+* production deployments
 
-                         MARKET DATA
+If something has not been measured, it should be represented as:
 
-                             |
+```text
+Not yet measured
+```
 
-                             v
+Synthetic development data is explicitly identified as:
 
-                 +-----------------------+
+```text
+Synthetic development data
+```
 
-                 | Data Ingestion Layer  |
+## 4. Temporal Integrity
 
-                 +-----------------------+
+Every feature and prediction must respect the information available at the relevant point in time.
 
-                             |
+Future information must never leak into historical decisions.
 
-                             v
+## 5. Research Before Optimization
 
-                 +-----------------------+
+QuantStrat prioritizes correctness over visual complexity and theoretical sophistication.
 
-                 | Data Validation       |
+A simpler model with valid evaluation is more valuable than a complex model with questionable methodology.
 
-                 | & Cleaning            |
+---
 
-                 +-----------------------+
+# Core Capabilities
 
-                             |
+QuantStrat integrates the following research capabilities:
 
-                             v
+### Market Data
 
-                 +-----------------------+
+* OHLCV data
+* historical prices
+* volumes
+* asset metadata
+* CSV ingestion
+* synthetic development data
+* provider abstraction
 
-                 | Feature Engineering   |
+### Financial Mathematics
 
-                 +-----------------------+
+* simple returns
+* logarithmic returns
+* volatility
+* covariance
+* correlation
+* drawdown
+* beta
+* portfolio mathematics
 
-                             |
+### Statistical Modeling
+
+* rolling statistics
+* variance
+* skewness
+* kurtosis
+* autocorrelation
+* statistical evaluation
+
+### Feature Engineering
+
+* momentum
+* moving averages
+* exponential moving averages
+* volatility indicators
+* volume features
+* RSI
+* MACD
+* Bollinger Bands
+* ATR
+
+### Machine Learning
+
+* linear regression
+* logistic regression
+* random forests
+* gradient boosting
+* optional XGBoost / LightGBM
+* optional neural-network experiments
+
+### Strategy Research
+
+* signal generation
+* long / neutral / short states
+* configurable thresholds
+* confidence-based decisions
+* risk-aware signals
+
+### Portfolio Construction
+
+* equal weighting
+* minimum variance
+* maximum Sharpe-style optimization
+* configurable constraints
+
+### Backtesting
+
+* positions
+* cash
+* portfolio value
+* trades
+* fees
+* slippage
+* turnover
+* exposure
+* equity curves
+* drawdowns
+
+### Risk
+
+* volatility
+* beta
+* VaR
+* CVaR
+* maximum drawdown
+* concentration
+* exposure
+* downside risk
+* turnover
+
+### Engineering
+
+* FastAPI
+* React
+* PostgreSQL
+* Redis
+* Docker
+* GitHub Actions
+* automated testing
+* typed Python
+* structured logging
+
+---
+
+# Architecture
+
+QuantStrat follows a layered architecture.
+
+```text
+┌──────────────────────────────────────────────┐
+│                 MARKET DATA                  │
+└───────────────────────┬──────────────────────┘
+                        │
+                        ▼
+┌──────────────────────────────────────────────┐
+│             DATA INGESTION LAYER             │
+│     Providers / CSV / Synthetic / APIs       │
+└───────────────────────┬──────────────────────┘
+                        │
+                        ▼
+┌──────────────────────────────────────────────┐
+│          VALIDATION & NORMALIZATION          │
+└───────────────────────┬──────────────────────┘
+                        │
+                        ▼
+┌──────────────────────────────────────────────┐
+│            FEATURE ENGINEERING               │
+└───────────────────────┬──────────────────────┘
+                        │
+             ┌──────────┴──────────┐
+             ▼                     ▼
+┌─────────────────────┐   ┌─────────────────────┐
+│ MACHINE LEARNING    │   │ MATHEMATICAL ENGINE │
+│                     │   │                     │
+│ Regression          │   │ Returns             │
+│ Classification      │   │ Volatility          │
+│ Tree Models         │   │ Covariance          │
+│ Evaluation          │   │ Correlation         │
+└──────────┬──────────┘   │ Risk                │
+           │              │ Optimization        │
+           │              └──────────┬──────────┘
+           └──────────────┬───────────┘
+                          ▼
+                ┌─────────────────────┐
+                │ SIGNAL GENERATION   │
+                └──────────┬──────────┘
+                           ▼
+                ┌─────────────────────┐
+                │ PORTFOLIO ENGINE    │
+                └──────────┬──────────┘
+                           ▼
+                ┌─────────────────────┐
+                │ BACKTESTING ENGINE  │
+                └──────────┬──────────┘
+                           ▼
+                ┌─────────────────────┐
+                │ RISK & PERFORMANCE  │
+                └──────────┬──────────┘
+                           ▼
+              ┌────────────┴────────────┐
+              ▼                         ▼
+        ┌───────────┐             ┌───────────┐
+        │  FastAPI  │             │  React UI │
+        └─────┬─────┘             └───────────┘
+              │
+              ▼
+       ┌───────────────┐
+       │ MLOps / DevOps│
+       └───────────────┘
+```
 
-               +-------------+-------------+
+Each layer has a defined responsibility and communicates through explicit interfaces.
 
-               |                           |
+---
 
-               v                           v
+# Mathematical Foundation
 
-      +------------------+       +---------------------+
+QuantStrat implements core quantitative-finance mathematics rather than treating the market as a generic tabular ML problem.
 
-      | ML Layer         |       | Mathematical Layer  |
+## Simple Returns
 
-      |                  |       |                     |
+For price \(P_t\):
 
-      | Regression       |       | Returns             |
+$$
+r_t = \frac{P_t}{P_{t-1}} - 1
+$$
 
-      | Classification   |       | Volatility          |
+where:
 
-      | Time Series      |       | Covariance          |
+* \(P_t\) is the current price
+* \(P_{t-1}\) is the previous price
+* \(r_t\) is the simple return
 
-      | Ensemble Models  |       | Correlation         |
+---
 
-      | Probabilities    |       | Risk                |
+## Logarithmic Returns
 
-      +------------------+       | Optimization         |
+$$
+r_t^{log} = \ln\left(\frac{P_t}{P_{t-1}}\right)
+$$
 
-               |                 +---------------------+
+Log returns are useful for additive time-series analysis and statistical modeling.
 
-               |                           |
+---
 
-               +-------------+-------------+
+## Volatility
 
-                             |
+For a return series \(r_t\), rolling volatility is estimated using the standard deviation:
 
-                             v
+$$
+\sigma = \sqrt{\frac{1}{n-1}
+\sum_{i=1}^{n}(r_i-\bar r)^2}
+$$
 
-                  +----------------------+
+Annualized volatility can be estimated as:
 
-                  | Signal Generation    |
+$$
+\sigma_{annual} = \sigma_{period}\sqrt{N}
+$$
 
-                  +----------------------+
+where \(N\) depends on the observation frequency.
 
-                             |
+---
 
-                             v
+## Portfolio Return
 
-                  +----------------------+
+For weights \(w\) and expected asset returns \(\mu\):
 
-                  | Portfolio / Strategy |
+$$
+E[R_p] = w^T\mu
+$$
 
-                  | Engine               |
+---
 
-                  +----------------------+
+## Portfolio Volatility
 
-                             |
+Given covariance matrix \(\Sigma\):
 
-                             v
+$$
+\sigma_p = \sqrt{w^T\Sigma w}
+$$
 
-                  +----------------------+
+This allows portfolio risk to account for interactions between assets rather than simply adding individual volatilities.
 
-                  | Backtesting Engine   |
+---
 
-                  +----------------------+
+## Sharpe Ratio
 
-                             |
+$$
+Sharpe =
+\frac{R_p-R_f}{\sigma_p}
+$$
 
-                             v
+where:
 
-                  +----------------------+
+* \(R_p\) = portfolio return
+* \(R_f\) = risk-free rate
+* \(\sigma_p\) = portfolio volatility
 
-                  | Risk & Performance   |
+The Sharpe ratio is treated as an evaluation statistic, not proof of future performance.
 
-                  | Analytics             |
+---
 
-                  +----------------------+
+## Maximum Drawdown
 
-                             |
+For portfolio value \(V_t\):
 
-                             v
+$$
+DD_t = \frac{V_t}{\max_{s\leq t}V_s}-1
+$$
 
-                  +----------------------+
+Maximum drawdown is:
 
-                  | API / Dashboard      |
+$$
+MDD = \min_t DD_t
+$$
 
-                  +----------------------+
+---
 
-                             |
+## Value at Risk
 
-                             v
+QuantStrat supports multiple approaches, including:
 
-                  +----------------------+
+* historical VaR
+* parametric VaR
 
-                  | DevOps / MLOps       |
+Each method has assumptions and limitations that must be considered when interpreting the result.
 
-                  +----------------------+
+---
 
-Use clean interfaces between every layer.
+## Conditional Value at Risk
 
-==================================================
+CVaR estimates the expected loss conditional on losses exceeding the VaR threshold.
 
-2. TECHNOLOGY STACK
+It provides additional information about the tail of the loss distribution.
 
-==================================================
+---
 
-Use Python as the primary language.
+# Feature Engineering
 
-Backend:
+QuantStrat provides reusable financial feature pipelines.
 
-- Python 3.12+
+### Price Features
 
-- FastAPI
+* simple returns
+* logarithmic returns
+* rolling returns
+* momentum
+* SMA
+* EMA
 
-- Pydantic
+### Volatility Features
 
-- Uvicorn
+* rolling standard deviation
+* exponentially weighted volatility
+* ATR
 
-Data:
+### Trend Features
 
-- pandas
+* moving-average relationships
+* momentum indicators
 
-- NumPy
+### Volume Features
 
-- Polars where useful for performance
+* volume change
+* rolling volume
+* volume z-score
 
-- PyArrow
+### Statistical Features
 
-- Parquet
+* rolling mean
+* rolling variance
+* skewness
+* kurtosis
+* autocorrelation
 
-Machine Learning:
+### Technical Features
 
-- scikit-learn
+* RSI
+* MACD
+* Bollinger Bands
 
-- XGBoost or LightGBM if appropriate
+Every feature has an associated lookback period and metadata.
 
-- optionally PyTorch for a neural-network experiment
+A critical design rule is:
 
-Mathematics / Statistics:
+> **A feature at time \(t\) may only use information available at or before \(t\).**
 
-- SciPy
+This prevents future observations from contaminating historical decisions.
 
-- NumPy
+---
 
-- statsmodels
+# Machine Learning
 
-Optimization:
+QuantStrat uses a model abstraction so different models can participate in the same research pipeline.
 
-- scipy.optimize
+The conceptual interface includes:
 
-- CVXPY where appropriate
-
-Database:
-
-- PostgreSQL
-
-- SQLAlchemy
-
-- Alembic
-
-Caching:
-
-- Redis
-
-Frontend:
-
-- React
-
-- TypeScript
-
-- Vite
-
-- Tailwind CSS
-
-- Recharts or another suitable charting library
-
-Infrastructure:
-
-- Docker
-
-- Docker Compose
-
-- GitHub Actions
-
-Testing:
-
-- pytest
-
-- pytest-cov
-
-- mypy
-
-- Ruff
-
-Documentation:
-
-- Markdown
-
-- OpenAPI through FastAPI
-
-- architecture diagrams using Mermaid
-
-Optional:
-
-- MLflow for experiment tracking
-
-- MinIO/S3-compatible object storage for datasets and model artifacts
-
-Do not introduce unnecessary dependencies.
-
-==================================================
-
-3. PROJECT STRUCTURE
-
-==================================================
-
-Create a professional monorepo:
-
-stratum/
-
-│
-
-├── apps/
-
-│   ├── api/
-
-│   └── web/
-
-│
-
-├── packages/
-
-│   ├── data/
-
-│   ├── features/
-
-│   ├── mathematics/
-
-│   ├── models/
-
-│   ├── signals/
-
-│   ├── portfolio/
-
-│   ├── backtesting/
-
-│   ├── risk/
-
-│   └── common/
-
-│
-
-├── pipelines/
-
-│   ├── ingestion/
-
-│   ├── training/
-
-│   └── evaluation/
-
-│
-
-├── notebooks/
-
-│
-
-├── tests/
-
-│   ├── unit/
-
-│   ├── integration/
-
-│   └── backtesting/
-
-│
-
-├── infrastructure/
-
-│   ├── docker/
-
-│   └── github/
-
-│
-
-├── configs/
-
-│
-
-├── data/
-
-│   ├── raw/
-
-│   ├── processed/
-
-│   └── features/
-
-│
-
-├── models/
-
-│
-
-├── docs/
-
-│
-
-├── scripts/
-
-│
-
-├── docker-compose.yml
-
-├── Dockerfile
-
-├── pyproject.toml
-
-├── .env.example
-
-├── Makefile
-
-└── README.md
-
-Keep business logic separate from API and UI code.
-
-==================================================
-
-4. DATA INGESTION
-
-==================================================
-
-Create a provider abstraction:
-
-MarketDataProvider
-
-with methods such as:
-
-get_historical_prices()
-
-get_latest_prices()
-
-get_volume()
-
-get_asset_metadata()
-
-Do not hard-code one provider throughout the application.
-
-Implement:
-
-1. CSV provider
-
-2. Synthetic data provider
-
-3. Optional public market-data provider
-
-The system must work without an external API key.
-
-Create realistic synthetic OHLCV data for development and testing.
-
-Synthetic data must be clearly identified.
-
-Support:
-
-- Open
-
-- High
-
-- Low
-
-- Close
-
-- Adjusted Close where available
-
-- Volume
-
-- Timestamp
-
-- Symbol
-
-Validate:
-
-- missing timestamps
-
-- duplicate timestamps
-
-- invalid OHLC relationships
-
-- missing values
-
-- extreme anomalies
-
-- timezone consistency
-
-==================================================
-
-5. FEATURE ENGINEERING
-
-==================================================
-
-Implement reusable feature pipelines.
-
-Features should include:
-
-Price-based:
-
-- simple returns
-
-- logarithmic returns
-
-- rolling returns
-
-- momentum
-
-- moving averages
-
-- exponential moving averages
-
-Volatility:
-
-- rolling standard deviation
-
-- exponentially weighted volatility
-
-- ATR
-
-Trend:
-
-- moving-average relationships
-
-- momentum indicators
-
-Volume:
-
-- volume change
-
-- rolling volume
-
-- volume z-score
-
-Statistical:
-
-- rolling mean
-
-- rolling variance
-
-- skewness
-
-- kurtosis
-
-- autocorrelation
-
-Technical indicators may include:
-
-- RSI
-
-- MACD
-
-- Bollinger Bands
-
-Every feature must specify its lookback period.
-
-CRITICAL:
-
-All features at timestamp t must use information available at or before t.
-
-Never use future observations.
-
-Create feature metadata so the system knows:
-
-feature_name
-
-lookback
-
-source_columns
-
-creation_timestamp
-
-version
-
-==================================================
-
-6. MATHEMATICAL ENGINE
-
-==================================================
-
-Build a dedicated mathematics package.
-
-Implement:
-
-Returns:
-
-r_t = P_t / P_{t-1} - 1
-
-and logarithmic returns:
-
-r_t = ln(P_t / P_{t-1})
-
-Volatility:
-
-rolling volatility
-
-annualized volatility
-
-Covariance:
-
-rolling covariance matrix
-
-Correlation:
-
-rolling correlation matrix
-
-Drawdown:
-
-peak-to-trough drawdown
-
-Risk metrics:
-
-- volatility
-
-- maximum drawdown
-
-- Value at Risk
-
-- Conditional Value at Risk
-
-- downside deviation
-
-- beta
-
-- correlation
-
-Implement multiple VaR methods where practical:
-
-1. Historical VaR
-
-2. Parametric VaR
-
-Do not pretend these models are universally accurate.
-
-Document assumptions.
-
-==================================================
-
-7. PORTFOLIO OPTIMIZATION
-
-==================================================
-
-Implement portfolio optimization.
-
-Support:
-
-Equal Weight
-
-Minimum Variance
-
-Maximum Sharpe-style optimization
-
-Risk-aware optimization
-
-Use constraints:
-
-- weights sum to 1
-
-- configurable long-only constraint
-
-- configurable maximum asset weight
-
-- configurable minimum asset weight
-
-Use CVXPY or scipy.optimize.
-
-Implement:
-
-portfolio_return()
-
-portfolio_volatility()
-
-portfolio_sharpe()
-
-portfolio_drawdown()
-
-Return:
-
-weights
-
-expected return
-
-volatility
-
-risk metrics
-
-objective value
-
-Clearly separate estimated quantities from realized historical results.
-
-==================================================
-
-8. MACHINE LEARNING ENGINE
-
-==================================================
-
-Create a model abstraction.
-
-Base interface:
-
-QuantModel
-
-Methods:
-
+```python
 fit()
-
 predict()
-
 predict_proba()
-
 save()
-
 load()
-
 evaluate()
+```
 
-Implement baseline models first.
+## Supported Models
 
-Models:
+### Linear Regression
 
-1. Linear Regression
+Used as an interpretable baseline for future-return prediction.
 
-2. Logistic Regression
+### Logistic Regression
 
-3. Random Forest
+Used for binary classification problems such as predicting whether future returns are positive.
 
-4. Gradient Boosting
+### Random Forest
 
-5. XGBoost or LightGBM if dependency availability permits
+Provides nonlinear decision boundaries and feature-importance analysis.
 
-Optional:
+### Gradient Boosting
 
-6. Neural Network using PyTorch
+Provides another nonlinear baseline suitable for tabular financial features.
 
-The first production path should remain simple and interpretable.
+### Optional Gradient-Boosted Libraries
 
-Target examples:
+Where dependency availability permits:
 
-Regression:
+* XGBoost
+* LightGBM
 
-predict future return over a configurable horizon.
+### Optional Neural Networks
 
-Classification:
+PyTorch can be introduced for experimental research.
 
-predict whether future return is positive.
+The production research path intentionally begins with simpler, interpretable models.
 
-Never train using future information.
+---
 
-==================================================
+# Time-Series Validation
 
-9. TIME-SERIES VALIDATION
+Random train/test splitting is inappropriate for many financial forecasting problems because it can allow future information to influence the training process.
 
-==================================================
+QuantStrat instead supports:
 
-Do NOT use ordinary random train/test splitting for time-series prediction.
+* chronological train/validation/test splits
+* expanding-window validation
+* walk-forward validation
 
-Implement:
+Conceptually:
 
-- chronological train/validation/test split
+```text
+Historical Data
 
-- expanding-window validation
+├─────────────── Train ───────────────┤
+                                    │
+                                    ▼
+                         ├── Validation ──┤
+                                             │
+                                             ▼
+                                      ├── Test ──┤
+```
 
-- walk-forward validation
+Walk-forward evaluation extends this concept:
+
+```text
+Window 1
+Train ───────► Validate
+
+Window 2
+Train ───────────► Validate
+
+Window 3
+Train ───────────────► Validate
+
+Window 4
+Train ──────────────────► Test
+```
+
+This provides a more realistic representation of how a strategy would operate through time.
+
+---
+
+# Model Evaluation
+
+QuantStrat separates predictive evaluation from economic evaluation.
+
+## Regression Metrics
+
+* MAE
+* MSE
+* RMSE
+* R²
+
+## Classification Metrics
+
+* accuracy
+* precision
+* recall
+* F1
+* ROC-AUC
+* confusion matrix
+
+## Strategy Metrics
+
+* cumulative return
+* annualized return
+* volatility
+* Sharpe ratio
+* Sortino ratio
+* maximum drawdown
+* Calmar ratio
+* turnover
+
+A model is not considered successful simply because it has high predictive accuracy.
+
+---
+
+# Signal Generation
+
+Predictions are converted into configurable quantitative signals.
 
 Example:
 
-Train:
+```text
+prediction > upper_threshold
+        │
+        ▼
+      LONG
 
-2019-2022
 
-Validation:
+prediction < lower_threshold
+        │
+        ▼
+      SHORT
 
-2023
 
-Test:
-
-2024
-
-The actual periods must be configurable.
-
-Prevent leakage.
-
-Create a reusable:
-
-TimeSeriesSplitter
-
-class.
-
-==================================================
-
-10. MODEL EVALUATION
-
-==================================================
-
-For regression:
-
-- MAE
-
-- MSE
-
-- RMSE
-
-- R²
-
-For classification:
-
-- accuracy
-
-- precision
-
-- recall
-
-- F1
-
-- ROC-AUC
-
-- confusion matrix
-
-For quantitative usefulness:
-
-- cumulative return
-
-- annualized return
-
-- volatility
-
-- Sharpe ratio
-
-- Sortino ratio
-
-- maximum drawdown
-
-- Calmar ratio
-
-- turnover
-
-Do not optimize solely for ML prediction accuracy.
-
-The system should distinguish:
-
-MODEL PERFORMANCE
-
-from
-
-STRATEGY PERFORMANCE
-
-These are not the same thing.
-
-==================================================
-
-11. SIGNAL GENERATION
-
-==================================================
-
-Build a signal engine.
-
-Inputs:
-
-- model prediction
-
-- prediction probability
-
-- confidence threshold
-
-- risk constraints
-
-- market conditions
-
-Possible signals:
-
-LONG
-
-NEUTRAL
-
-SHORT
+otherwise
+        │
+        ▼
+     NEUTRAL
+```
 
 For long-only strategies:
 
+```text
 BUY
-
 HOLD
-
 SELL
+```
 
-Make thresholds configurable.
+Each signal contains information such as:
 
-Example:
+* timestamp
+* symbol
+* prediction
+* confidence/probability
+* signal
+* model version
 
-prediction > upper_threshold
+This creates an auditable connection between model output and strategy behavior.
 
-    -> LONG
+---
 
-prediction < lower_threshold
+# Portfolio Optimization
 
-    -> SHORT
+QuantStrat includes portfolio-construction methods designed to make allocation decisions explicit.
 
-otherwise
+## Equal Weight
 
-    -> NEUTRAL
+Every asset receives equal allocation.
 
-Do not create signals from future data.
+## Minimum Variance
 
-Every signal must contain:
+The optimizer attempts to minimize portfolio variance:
 
-timestamp
+$$
+\min_w w^T\Sigma w
+$$
 
-symbol
+subject to portfolio constraints.
 
-prediction
+## Maximum Sharpe-Style Optimization
 
-probability/confidence
+The system can optimize the return-to-risk relationship under configurable constraints.
 
-signal
+## Risk-Aware Allocation
 
-model_version
+Additional restrictions can be introduced to control:
 
-==================================================
+* concentration
+* maximum position size
+* minimum allocation
+* long-only exposure
 
-12. BACKTESTING ENGINE
+Common constraints include:
 
-==================================================
+$$
+\sum_i w_i = 1
+$$
 
-Build a proper event/time-based backtesting engine.
+and:
 
-It must simulate:
+$$
+w_i \leq w_{max}
+$$
 
-- positions
+The platform distinguishes estimated optimization outputs from realized historical performance.
 
-- portfolio value
+---
 
-- transactions
+# Backtesting
 
-- fees
+The backtesting engine is designed around time-based strategy simulation.
 
-- slippage
+It models:
 
-- turnover
+* positions
+* cash
+* portfolio value
+* transactions
+* transaction costs
+* slippage
+* turnover
+* exposure
+* equity curve
+* drawdowns
 
-- cash
+Example configuration:
 
-- exposure
+```text
+Initial Capital:      configurable
+Transaction Cost:     configurable
+Slippage:             configurable
+Rebalance Frequency:  configurable
+```
 
-Parameters:
+The purpose of the backtester is not to make strategies look profitable.
 
-initial_capital
+It is to determine what would have happened under the specified assumptions.
 
-transaction_cost
+If a strategy performs poorly, QuantStrat should report that result.
 
-slippage
+---
 
-rebalance_frequency
+# Backtesting Integrity
 
-Support:
+Financial backtesting is particularly vulnerable to methodological errors.
 
-- daily backtesting
+QuantStrat explicitly considers:
 
-- configurable rebalance frequency
+### Look-Ahead Bias
 
-Produce:
+Future information must not influence historical decisions.
 
-equity curve
+### Data Leakage
 
-daily returns
+Training and evaluation data must remain appropriately separated.
 
-positions
+### Survivorship Bias
 
-trades
+Historical asset universes should not be constructed solely from assets that survived to the present where avoidable.
 
-transaction costs
+### Timestamp Alignment
 
-drawdowns
+Signals and executions must correspond to information actually available at the relevant time.
 
-IMPORTANT:
+### Execution Assumptions
 
-Do not create fake profitable results.
+A signal generated using information at the close should not automatically assume execution at that same unavailable closing price.
 
-If the strategy performs poorly, show that honestly.
+### Transaction Costs
 
-==================================================
+Costs must be included when evaluating realistic strategy behavior.
 
-13. BACKTESTING SAFETY
+### Slippage
 
-==================================================
+Execution prices should account for deviations from idealized prices where appropriate.
 
-Implement protections against:
+### Overfitting
 
-Look-ahead bias
+A strategy that performs exceptionally well only under one configuration may simply have learned historical noise.
 
-Data leakage
+---
 
-Survivorship bias where possible
+# Risk Engine
 
-Incorrect timestamp alignment
+QuantStrat contains a dedicated risk-analysis layer.
 
-Using closing prices to generate a signal and assuming execution at that same unavailable close
+The engine evaluates:
 
-Overfitting
+* volatility
+* beta
+* VaR
+* CVaR
+* maximum drawdown
+* concentration risk
+* exposure
+* turnover
+* downside risk
 
-Transaction-cost neglect
+The system can produce a structured `RiskReport` containing portfolio-level risk information.
 
-Unrealistic execution
+Risk metrics are interpreted as estimates under model assumptions, not guarantees about future market behavior.
 
-The README must explain these limitations.
+---
 
-==================================================
+# Model Interpretability
 
-14. RISK ENGINE
+QuantStrat supports model interpretation to investigate which variables influence predictions.
 
-==================================================
+For tree-based models, this can include:
 
-Create a dedicated risk package.
+* model feature importance
+* permutation importance
 
-Implement:
+SHAP-based analysis can also be incorporated where appropriate.
 
-- volatility
+Feature importance should answer:
 
-- beta
+> Which variables contributed to the model's prediction?
 
-- VaR
+It should **not** be interpreted as:
 
-- CVaR
+> Which variables causally move the market?
 
-- maximum drawdown
+Correlation, predictive usefulness, and causality are different concepts.
 
-- concentration risk
+---
 
-- exposure
+# Experiment Tracking
 
-- turnover
+Each experiment should be associated with metadata such as:
 
-- downside risk
+```text
+Experiment ID
+Model Name
+Model Version
+Dataset Version
+Feature Version
+Hyperparameters
+Training Period
+Validation Period
+Test Period
+Metrics
+Timestamp
+```
 
-Portfolio-level metrics should update automatically after backtests.
+This makes it possible to compare experiments without losing track of how each result was produced.
 
-Create a RiskReport object.
+---
 
-==================================================
+# Model Registry
 
-15. EXPERIMENT TRACKING
+QuantStrat provides a model-registry abstraction supporting operations such as:
 
-==================================================
-
-Create an experiment abstraction.
-
-Every ML experiment should store:
-
-experiment_id
-
-model_name
-
-model_version
-
-dataset_version
-
-feature_version
-
-hyperparameters
-
-training_period
-
-validation_period
-
-test_period
-
-metrics
-
-timestamp
-
-If MLflow is used, integrate it cleanly.
-
-Do not make MLflow mandatory for local development.
-
-==================================================
-
-16. MODEL REGISTRY
-
-==================================================
-
-Create:
-
-ModelRegistry
-
-It should support:
-
+```text
 register_model()
-
 load_model()
-
 list_models()
-
 promote_model()
-
 archive_model()
+```
 
-Store metadata.
+Model artifacts can be organized as:
 
-Example:
-
+```text
 models/
+└── model_name/
+    └── version/
+        ├── model.pkl
+        └── metadata.json
+```
 
-    model_name/
+Large model artifacts should remain outside the relational database.
 
-        version/
+---
 
-            model.pkl
+# API
 
-            metadata.json
+QuantStrat exposes its research functionality through FastAPI.
 
-==================================================
+## Core Endpoints
 
-17. API
+```text
+GET  /health
 
-==================================================
+GET  /assets
 
-Build FastAPI endpoints.
+GET  /market/{symbol}
 
-Examples:
-
-GET /health
-
-GET /assets
-
-GET /market/{symbol}
-
-GET /features/{symbol}
+GET  /features/{symbol}
 
 POST /models/train
 
-GET /models
+GET  /models
 
-GET /models/{model_id}
+GET  /models/{model_id}
 
 POST /predict
 
@@ -1132,412 +1008,1057 @@ POST /signals
 
 POST /backtest
 
-GET /backtest/{id}
+GET  /backtest/{id}
 
-GET /risk/{portfolio_id}
+GET  /risk/{portfolio_id}
 
-GET /portfolio/{id}
+GET  /portfolio/{id}
 
-GET /experiments
+GET  /experiments
 
+GET  /system/status
+
+GET  /jobs/{job_id}
+```
+
+FastAPI automatically exposes OpenAPI documentation.
+
+When running locally:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+# Dashboard
+
+QuantStrat provides a research-oriented web dashboard rather than a generic trading interface.
+
+The design focuses on:
+
+* dark professional interface
+* high information density
+* restrained visual hierarchy
+* clear typography
+* responsive layouts
+* research transparency
+
+## Dashboard Sections
+
+### Overview
+
+Displays:
+
+* selected asset
+* latest price
+* daily return
+* volatility
+* model prediction
+* confidence
+* current signal
+* portfolio value
+* drawdown
+* Sharpe ratio
+
+### Market Data
+
+Explore market prices and historical observations.
+
+### Feature Explorer
+
+Inspect engineered features and their behavior over time.
+
+### Model Lab
+
+Train and evaluate quantitative models.
+
+### Predictions
+
+Inspect model predictions and confidence.
+
+### Signals
+
+Explore generated strategy signals.
+
+### Backtesting
+
+Run and analyze historical strategy simulations.
+
+### Portfolio
+
+Inspect allocations and portfolio statistics.
+
+### Risk
+
+Explore portfolio risk metrics.
+
+### Experiments
+
+Compare model and strategy experiments.
+
+### System Health
+
+Inspect application infrastructure and service status.
+
+---
+
+# Dashboard Visualizations
+
+The interface can visualize:
+
+* price history
+* returns
+* equity curves
+* drawdowns
+* volatility
+* feature importance
+* portfolio allocation
+* correlation matrices
+
+The dashboard explicitly distinguishes between:
+
+```text
+Observed Data
+Predictions
+Backtested Results
+Synthetic / Demo Data
+```
+
+This prevents simulated or predicted information from being visually confused with observed market history.
+
+---
+
+# Technology Stack
+
+## Backend
+
+* Python 3.12+
+* FastAPI
+* Pydantic
+* Uvicorn
+
+## Data
+
+* pandas
+* NumPy
+* Polars
+* PyArrow
+* Parquet
+
+## Machine Learning
+
+* scikit-learn
+* XGBoost / LightGBM where appropriate
+* PyTorch for optional experiments
+
+## Mathematics & Statistics
+
+* NumPy
+* SciPy
+* statsmodels
+
+## Optimization
+
+* scipy.optimize
+* CVXPY
+
+## Database
+
+* PostgreSQL
+* SQLAlchemy
+* Alembic
+
+## Caching
+
+* Redis
+
+## Frontend
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* Recharts
+
+## Infrastructure
+
+* Docker
+* Docker Compose
+* GitHub Actions
+
+## Testing & Quality
+
+* pytest
+* pytest-cov
+* mypy
+* Ruff
+
+---
+
+# Project Structure
+
+```text
+quantstrat/
+│
+├── apps/
+│   ├── api/
+│   └── web/
+│
+├── packages/
+│   ├── data/
+│   ├── features/
+│   ├── mathematics/
+│   ├── models/
+│   ├── signals/
+│   ├── portfolio/
+│   ├── backtesting/
+│   ├── risk/
+│   └── common/
+│
+├── pipelines/
+│   ├── ingestion/
+│   ├── training/
+│   └── evaluation/
+│
+├── notebooks/
+│
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── backtesting/
+│
+├── infrastructure/
+│   ├── docker/
+│   └── github/
+│
+├── configs/
+│
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── features/
+│
+├── models/
+│
+├── reports/
+│
+├── docs/
+│
+├── scripts/
+│
+├── Dockerfile
+├── docker-compose.yml
+├── Makefile
+├── pyproject.toml
+├── .env.example
+└── README.md
+```
+
+The architecture intentionally separates business logic from API and frontend code.
+
+---
+
+# Data Architecture
+
+QuantStrat uses a provider abstraction:
+
+```python
+MarketDataProvider
+```
+
+with operations conceptually including:
+
+```python
+get_historical_prices()
+get_latest_prices()
+get_volume()
+get_asset_metadata()
+```
+
+Supported development paths include:
+
+### CSV Provider
+
+Useful for importing research datasets.
+
+### Synthetic Provider
+
+Useful for:
+
+* development
+* testing
+* demonstrations
+* reproducible examples
+
+Synthetic data is clearly labeled.
+
+### External Provider
+
+The architecture allows public market-data providers to be introduced without coupling the entire system to a single vendor.
+
+---
+
+# Database
+
+The production architecture uses PostgreSQL for structured metadata and research state.
+
+Core entities include:
+
+```text
+assets
+market_data
+features
+experiments
+models
+predictions
+signals
+backtests
+trades
+portfolios
+```
+
+SQLAlchemy provides database models and Alembic manages schema migrations.
+
+Large machine-learning artifacts are stored separately rather than inside PostgreSQL.
+
+---
+
+# Redis
+
+Redis can be used for:
+
+* latest market-data caching
+* temporary task state
+* background-job infrastructure
+
+Redis is not required for basic mathematical or unit-test execution.
+
+---
+
+# Asynchronous Jobs
+
+Training and large backtests can be computationally expensive.
+
+QuantStrat therefore supports an asynchronous-job architecture so that long-running work does not unnecessarily block API requests.
+
+Possible execution architecture:
+
+```text
+Client
+  │
+  ▼
+FastAPI
+  │
+  ▼
+Job Queue
+  │
+  ▼
+Worker
+  │
+  ├── Model Training
+  ├── Backtesting
+  └── Evaluation
+```
+
+Job status can be exposed through:
+
+```text
+GET /jobs/{job_id}
+```
+
+---
+
+# Reproducibility
+
+Reproducibility is a first-class requirement.
+
+Experiments should track:
+
+* Python version
+* dependency versions
+* dataset version
+* feature version
+* model version
+* configuration
+* random seeds
+* training period
+* validation period
+* test period
+
+A reproducible experiment should be executable from a clean environment.
+
+The project provides a complete example workflow through:
+
+```bash
+make reproduce
+```
+
+---
+
+# Testing
+
+QuantStrat treats quantitative calculations as testable software components.
+
+## Mathematical Tests
+
+Tests cover areas such as:
+
+* returns
+* volatility
+* covariance
+* VaR
+* CVaR
+* drawdown
+* portfolio metrics
+
+## Feature Tests
+
+Feature generation is tested for:
+
+* correct calculations
+* expected columns
+* temporal integrity
+* missing values
+
+## Machine Learning Tests
+
+Tests include:
+
+* deterministic training
+* fixed random seeds
+* valid predictions
+* train/test separation
+
+## Backtesting Tests
+
+Backtesting tests cover:
+
+* transaction costs
+* slippage
+* position accounting
+* cash accounting
+* drawdowns
+* timestamp alignment
+
+## API Tests
+
+API-level tests cover:
+
+* health
+* prediction
+* backtesting
+* risk
+* model endpoints
+
+---
+
+# Security
+
+QuantStrat follows basic application-security principles:
+
+* validated API inputs
+* environment-based configuration
+* no committed secrets
+* controlled CORS
+* dependency pinning
+* avoidance of arbitrary code execution
+* non-root containers where practical
+
+Secrets belong in environment configuration, never in source control.
+
+---
+
+# DevOps
+
+The system is containerized using Docker.
+
+The development environment can include:
+
+```text
+┌─────────────┐
+│    React    │
+│     Web     │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│   FastAPI   │
+│     API     │
+└──────┬──────┘
+       │
+   ┌───┴────┐
+   ▼        ▼
+PostgreSQL Redis
+```
+
+Docker Compose provides local orchestration.
+
+---
+
+# CI/CD
+
+The CI pipeline is designed around:
+
+```text
+Checkout
+   ↓
+Install Dependencies
+   ↓
+Lint
+   ↓
+Type Check
+   ↓
+Unit Tests
+   ↓
+Integration Tests
+   ↓
+Docker Build
+   ↓
+Security / Dependency Checks
+```
+
+A failing test or quality check should prevent a successful build from being treated as valid.
+
+---
+
+# Observability
+
+Structured logging captures important application events such as:
+
+* API requests
+* model training
+* prediction jobs
+* backtests
+* failures
+* job status
+
+System health can be exposed through:
+
+```text
 GET /system/status
+```
 
-Generate automatic OpenAPI documentation.
+The status layer can report:
 
-Use Pydantic schemas.
+```text
+API
+Database
+Redis
+Model Registry
+Data Provider
+```
 
-Validate every request.
+---
 
-==================================================
+# Research Workflow
 
-18. WEB DASHBOARD
+A typical QuantStrat research experiment looks like this:
 
-==================================================
-
-Build a professional quantitative research dashboard.
-
-Design language:
-
-- dark professional interface
-
-- subtle grid background
-
-- restrained colors
-
-- high information density
-
-- clean typography
-
-- responsive layout
-
-Do not make it look like a generic crypto dashboard.
-
-Pages:
-
-1. Overview
-
-2. Market Data
-
-3. Feature Explorer
-
-4. Model Lab
-
-5. Predictions
-
-6. Signals
-
-7. Backtesting
-
-8. Portfolio
-
-9. Risk
-
-10. Experiments
-
-11. System Health
-
-Overview should show:
-
-- selected asset
-
-- latest price
-
-- daily return
-
-- volatility
-
-- model prediction
-
-- confidence
-
-- current signal
-
-- portfolio value
-
-- drawdown
-
-- Sharpe ratio
-
-Use charts for:
-
-- price
-
-- returns
-
-- equity curve
-
-- drawdown
-
-- volatility
-
-- feature importance
-
-- portfolio allocation
-
-- correlation matrix
-
-==================================================
-
-19. MODEL INTERPRETABILITY
-
-==================================================
-
-Implement feature importance.
-
-For tree models:
-
-- feature importance
-
-- permutation importance
-
-Where practical, support SHAP.
-
-Explain:
-
-Which features influence predictions?
-
-Do not present feature importance as causal evidence.
-
-==================================================
-
-20. CONFIGURATION
-
-==================================================
-
-Never hard-code important parameters.
-
-Use environment variables and configuration files.
+## Step 1: Define a Hypothesis
 
 Example:
 
-STRATUM_ENV=development
+> Historical price and volatility features may contain information useful for predicting next-period returns.
 
-DATABASE_URL=
+## Step 2: Obtain Data
 
-REDIS_URL=
+Use:
 
-DATA_PROVIDER=
+* historical market data
+* CSV data
+* or synthetic development data
 
-INITIAL_CAPITAL=
+## Step 3: Validate Data
 
-TRANSACTION_COST=
+Check:
 
-SLIPPAGE=
+* timestamps
+* duplicates
+* missing observations
+* OHLC consistency
+* anomalies
+* timezone consistency
 
-MODEL_VERSION=
+## Step 4: Build Features
 
-Create:
+Construct features using only information available at the prediction timestamp.
 
-.env.example
+## Step 5: Split Chronologically
 
-Never commit secrets.
+Separate:
 
-==================================================
+```text
+Training
+Validation
+Testing
+```
 
-21. DATABASE
+without randomly mixing observations across time.
 
-==================================================
+## Step 6: Train Model
 
-Use PostgreSQL.
+Begin with an interpretable baseline.
 
-Create tables for:
+## Step 7: Evaluate Predictions
 
-assets
+Calculate statistical prediction metrics.
 
-market_data
+## Step 8: Generate Signals
 
-features
+Convert predictions into strategy decisions.
 
-experiments
+## Step 9: Construct Portfolio
 
-models
+Apply allocation and risk constraints.
 
-predictions
+## Step 10: Backtest
 
-signals
+Simulate:
 
-backtests
+* positions
+* transactions
+* costs
+* slippage
+* portfolio value
 
-trades
+## Step 11: Analyze Risk
 
-portfolios
+Calculate:
 
-Use SQLAlchemy models.
+* volatility
+* Sharpe
+* Sortino
+* drawdown
+* VaR
+* CVaR
+* turnover
 
-Use Alembic migrations.
+## Step 12: Compare Against Baselines
 
-Do not store large ML artifacts directly inside PostgreSQL.
+At minimum:
 
-==================================================
+```text
+Buy & Hold
+Equal Weight
+Simple Momentum
+```
 
-22. REDIS
+## Step 13: Record the Experiment
 
-==================================================
+Save:
 
-Use Redis for:
+* model
+* configuration
+* dataset version
+* feature version
+* metrics
+* assumptions
 
-- caching latest market data
+## Step 14: Generate a Research Report
 
-- temporary task state
+The final report should include both successful and unsuccessful findings.
 
-- optional job queues
+---
 
-Do not make Redis required for simple unit tests.
+# Example Research Strategy
 
-==================================================
+QuantStrat includes a baseline strategy in which a model predicts next-period return.
 
-23. ASYNCHRONOUS JOBS
+Conceptually:
 
-==================================================
+```text
+Predicted Return
+       │
+       ├── > Upper Threshold ──► LONG
+       │
+       ├── < Lower Threshold ──► SHORT
+       │
+       └── Otherwise ──────────► NEUTRAL
+```
 
-Training and large backtests should not block API requests.
+The thresholds are configurable.
 
-Design a background-job abstraction.
+The system does not assume the strategy is profitable.
 
-Possible implementation:
+Instead, it calculates the result over the selected historical period.
 
-Celery + Redis
+---
 
-or
+# Baseline Comparison
 
-RQ + Redis
+Machine learning should not automatically receive credit for market behavior that could have been captured by a simpler strategy.
 
-Choose the simpler option.
+QuantStrat therefore encourages comparisons against:
 
-Expose job status:
+### Buy and Hold
 
-GET /jobs/{job_id}
+A passive baseline.
 
-==================================================
+### Equal Weight
 
-24. DEVOPS
+A simple portfolio allocation baseline.
 
-==================================================
+### Simple Momentum
 
-Containerize the complete application.
+A traditional rule-based quantitative baseline.
 
-Create:
+The purpose is to answer:
 
-Dockerfile
+> **Does the additional complexity of the ML model actually add value?**
 
-docker-compose.yml
+---
 
-Services:
+# Research Reports
 
-api
+After an experiment, QuantStrat can generate a structured research report.
 
-web
+A report should contain:
 
-postgres
+```text
+Dataset
+Features
+Model
+Training Period
+Validation Period
+Test Period
+Hyperparameters
+Prediction Metrics
+Strategy Metrics
+Risk Metrics
+Transaction Costs
+Drawdown
+Baseline Comparison
+Limitations
+```
 
-redis
+Reports can be stored as:
 
-Optional:
+```text
+reports/{experiment_id}.md
+```
 
-worker
+---
 
-Use multi-stage Docker builds where appropriate.
+# Harvard Crimson Research Context
 
-Keep images reasonably small.
+QuantStrat can serve as a technical research platform for quantitative-finance work presented, discussed, or developed in an academic or student-research context involving financial markets and computational methods.
 
-==================================================
+In that context, the value of QuantStrat is not simply the ability to produce a prediction.
 
-25. CI/CD
+The platform provides a way to demonstrate the complete chain from:
 
-==================================================
+```text
+Mathematical Hypothesis
+        ↓
+Statistical Representation
+        ↓
+Machine Learning Model
+        ↓
+Quantitative Signal
+        ↓
+Portfolio Construction
+        ↓
+Historical Simulation
+        ↓
+Risk Analysis
+        ↓
+Research Conclusion
+```
 
-Create GitHub Actions workflows.
+This makes the project suitable for demonstrating how concepts from:
 
-Pipeline:
+* mathematics
+* statistics
+* computer science
+* machine learning
+* financial economics
+* optimization
 
-1. checkout
+can be integrated into a single computational research system.
 
-2. install dependencies
+Any specific publication, institutional affiliation, competition result, or recognition should be documented separately and only claimed when independently verifiable.
 
-3. lint
+---
 
-4. type check
+# What Makes QuantStrat Powerful?
 
-5. unit tests
+The strength of QuantStrat does not come from using the largest possible model.
 
-6. integration tests
+It comes from connecting multiple disciplines into one controlled system.
 
-7. build Docker images
+### Mathematical Layer
 
-8. security/dependency checks
+Provides the theoretical foundation.
 
-Fail the pipeline if tests fail.
+### Statistical Layer
 
-Do not deploy broken builds.
+Measures uncertainty and historical behavior.
 
-==================================================
+### Machine Learning Layer
 
-26. TESTING
+Searches for nonlinear and predictive relationships.
 
-==================================================
+### Feature Layer
 
-Write serious tests.
+Transforms raw observations into structured signals.
 
-Unit tests:
+### Portfolio Layer
 
-- returns
+Converts predictions into allocation decisions.
 
-- volatility
+### Backtesting Layer
 
-- covariance
+Tests decisions through historical simulation.
 
-- VaR
+### Risk Layer
 
-- CVaR
+Measures downside and portfolio-level exposure.
 
-- drawdown
+### MLOps Layer
 
-- portfolio metrics
+Tracks models and experiments.
 
-- feature generation
+### DevOps Layer
 
-- signal generation
+Makes the research environment reproducible and deployable.
 
-ML tests:
+Together, these layers turn QuantStrat from a model into a **quantitative research infrastructure**.
 
-- deterministic training with fixed seeds
+---
 
-- no NaN predictions
+# What QuantStrat Is Not
 
-- correct train/test separation
+QuantStrat is not:
 
-Backtesting tests:
+* a guaranteed trading system
+* a financial advisor
+* a prediction oracle
+* a high-frequency trading engine
+* proof of future profitability
+* a replacement for professional investment research
 
-- transaction costs
+Historical backtests describe historical simulations.
 
-- slippage
+Predictions describe model outputs.
 
-- position accounting
+Neither guarantees future market behavior.
 
-- cash accounting
+---
 
-- drawdown calculation
+# Limitations
 
-- timestamp alignment
+Quantitative finance has fundamental limitations that software cannot eliminate.
 
-API tests:
+## Non-Stationarity
 
-- health
+Market relationships can change.
 
-- prediction
+A feature that worked historically may stop working.
 
-- backtest
+## Model Risk
 
-- risk
+A mathematically correct model can still be poorly specified.
 
-- model endpoints
+## Data Quality
 
-Integration tests:
+Bad or incomplete data can invalidate downstream analysis.
 
-API + PostgreSQL
+## Transaction Costs
 
-API + Redis
+Real execution may differ substantially from assumptions.
 
-==================================================
+## Liquidity
 
-27. REPRODUCIBILITY
+Backtests can underestimate market impact.
 
-==================================================
+## Survivorship Bias
 
-Set random seeds.
+Historical universes can be difficult to reconstruct perfectly.
 
-Track:
+## Overfitting
 
-- Python version
+A strategy can fit historical noise rather than persistent information.
 
-- dependency versions
+## Distribution Shift
 
-- dataset version
+Future market conditions may differ from training data.
 
-- feature version
+## Risk Model Assumptions
 
-- model version
+VaR, CVaR, volatility, and other statistics depend on assumptions about the return distribution and estimation window.
 
-- configuration
+These limitations are part of the research problem rather than something to hide.
 
-Every experiment must be reproducible.
+---
 
-Create a command:
+# Installation
 
+## Requirements
+
+Recommended environment:
+
+```text
+Python 3.12+
+Node.js
+npm
+Docker
+Docker Compose
+PostgreSQL
+Redis
+```
+
+For the basic local research workflow, external paid market-data APIs are not required.
+
+---
+
+# Backend Setup
+
+Create a virtual environment:
+
+```bash
+python -m venv .venv
+```
+
+Activate it:
+
+### macOS / Linux
+
+```bash
+source .venv/bin/activate
+```
+
+### Windows
+
+```powershell
+.venv\Scripts\activate
+```
+
+Install the project:
+
+```bash
+pip install -e .
+```
+
+---
+
+# Run the API
+
+```bash
+uvicorn apps.api.main:app --reload
+```
+
+The API will be available at:
+
+```text
+http://localhost:8000
+```
+
+Interactive documentation:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+# Run the Dashboard
+
+From the web application directory:
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+---
+
+# Docker
+
+The complete local environment can be started with:
+
+```bash
+docker compose up --build
+```
+
+This provides the infrastructure required by the application according to the configured services.
+
+---
+
+# Run Tests
+
+Run the complete test suite:
+
+```bash
+pytest
+```
+
+With coverage:
+
+```bash
+pytest --cov
+```
+
+Type checking:
+
+```bash
+mypy .
+```
+
+Linting:
+
+```bash
+ruff check .
+```
+
+---
+
+# Reproduce the Example Experiment
+
+Run:
+
+```bash
 make reproduce
+```
 
-that runs a complete example experiment from data ingestion through evaluation.
+The experiment performs the complete research pipeline:
 
-==================================================
+```text
+Generate / Load Data
+        ↓
+Validate Data
+        ↓
+Build Features
+        ↓
+Chronological Split
+        ↓
+Train Model
+        ↓
+Evaluate Model
+        ↓
+Generate Predictions
+        ↓
+Generate Signals
+        ↓
+Run Backtest
+        ↓
+Calculate Portfolio Metrics
+        ↓
+Calculate Risk Metrics
+        ↓
+Save Experiment
+```
 
-28. CLI
+---
 
-==================================================
+# CLI
 
-Create a command-line interface.
+QuantStrat is designed to expose common research operations through a command-line interface.
 
 Examples:
 
+```bash
 stratum data ingest
 
 stratum features build
@@ -1555,756 +2076,222 @@ stratum risk
 stratum experiment list
 
 stratum system check
-
-The CLI should produce useful human-readable output.
-
-==================================================
-
-29. DEMO WORKFLOW
-
-==================================================
-
-Create one complete end-to-end demo.
-
-The demo should:
-
-1. Generate or load historical data
-
-2. Validate the data
-
-3. Build features
-
-4. Split chronologically
-
-5. Train a baseline ML model
-
-6. Evaluate it
-
-7. Generate predictions
-
-8. Generate signals
-
-9. Run a backtest
-
-10. Calculate portfolio metrics
-
-11. Calculate risk metrics
-
-12. Save the experiment
-
-13. Display results through the dashboard
-
-The demo must work locally with:
-
-docker compose up
-
-and should not require paid APIs.
-
-==================================================
-
-30. DOCUMENTATION
-
-==================================================
-
-Create an excellent README.
-
-README sections:
-
-# STRATUM
-
-## Overview
-
-## Why STRATUM?
-
-## Architecture
-
-## Mathematical Foundation
-
-## Machine Learning
-
-## Feature Engineering
-
-## Portfolio Optimization
-
-## Risk Engine
-
-## Backtesting
-
-## API
-
-## Dashboard
-
-## DevOps
-
-## MLOps
-
-## Installation
-
-## Quick Start
-
-## Example Workflow
-
-## Testing
-
-## Reproducibility
-
-## Limitations
-
-## Roadmap
-
-## License
-
-Include architecture diagrams.
-
-Explain the mathematical assumptions.
-
-Explain why time-series validation is used.
-
-Explain look-ahead bias.
-
-Explain transaction costs.
-
-==================================================
-
-31. MATHEMATICAL DOCUMENTATION
-
-==================================================
-
-Create docs/mathematics.md.
-
-Document the mathematics behind:
-
-- returns
-
-- logarithmic returns
-
-- volatility
-
-- covariance
-
-- correlation
-
-- portfolio return
-
-- portfolio volatility
-
-- Sharpe ratio
-
-- Sortino ratio
-
-- drawdown
-
-- VaR
-
-- CVaR
-
-- beta
-
-- portfolio optimization
-
-Use equations where appropriate.
-
-Explain every variable.
-
-Do not include equations merely to look impressive.
-
-==================================================
-
-32. RESEARCH NOTEBOOKS
-
-==================================================
-
-Create notebooks:
-
-01_data_exploration.ipynb
-
-02_feature_engineering.ipynb
-
-03_model_training.ipynb
-
-04_walk_forward_validation.ipynb
-
-05_backtesting.ipynb
-
-06_risk_analysis.ipynb
-
-07_portfolio_optimization.ipynb
-
-Notebooks should call reusable package code.
-
-Do NOT duplicate the entire application inside notebooks.
-
-==================================================
-
-33. SECURITY
-
-==================================================
-
-Implement basic security best practices.
-
-- validate API inputs
-
-- do not expose secrets
-
-- sanitize configuration
-
-- restrict CORS appropriately
-
-- avoid arbitrary code execution
-
-- use dependency pinning
-
-- use non-root Docker users where practical
-
-==================================================
-
-34. OBSERVABILITY
-
-==================================================
-
-Implement structured logging.
-
-Log:
-
-- requests
-
-- model training
-
-- prediction jobs
-
-- backtests
-
-- failures
-
-- job status
-
-Create:
-
-GET /system/status
-
-Return:
-
-API status
-
-database status
-
-Redis status
-
-model registry status
-
-data provider status
-
-==================================================
-
-35. PERFORMANCE
-
-==================================================
-
-Avoid unnecessary recomputation.
-
-Use:
-
-- vectorized NumPy/pandas operations
-
-- Parquet for datasets
-
-- caching
-
-- database indexes
-
-- asynchronous jobs where appropriate
-
-Do not prematurely optimize everything.
-
-Prioritize correctness.
-
-==================================================
-
-36. CODE QUALITY
-
-==================================================
-
-Follow:
-
-PEP 8
-
-Type hints
-
-Docstrings for public functions/classes
-
-Small modules
-
-Single responsibility
-
-Dependency injection where useful
-
-Clear naming
-
-No giant files
-
-No duplicated business logic
-
-No magic numbers
-
-No unused imports
-
-No dead code
-
-No fake implementations hidden behind impressive names.
-
-==================================================
-
-37. ERROR HANDLING
-
-==================================================
-
-Create meaningful custom exceptions.
-
-Examples:
-
-DataValidationError
-
-FeatureGenerationError
-
-ModelTrainingError
-
-BacktestError
-
-RiskCalculationError
-
-ModelNotFoundError
-
-API errors should return structured JSON.
-
-==================================================
-
-38. FRONTEND UX
-
-==================================================
-
-The dashboard should clearly distinguish:
-
-Observed data
-
-Model predictions
-
-Backtested results
-
-Simulated/demo data
-
-Do not visually imply that predicted returns are guaranteed.
-
-Show timestamps.
-
-Show model version.
-
-Show dataset period.
-
-Show backtest assumptions.
-
-For every backtest, display:
-
-Initial capital
-
-Transaction costs
-
-Slippage
-
-Period
-
-Strategy
-
-Model
-
-Final portfolio value
-
-Total return
-
-Annualized return
-
-Volatility
-
-Sharpe
-
-Maximum drawdown
-
-Turnover
-
-==================================================
-
-39. EXAMPLE RESEARCH STRATEGY
-
-==================================================
-
-Create one baseline strategy.
-
-Example:
-
-Model predicts next-period return.
-
-If predicted return > threshold:
-
-    LONG
-
-If predicted return < negative threshold:
-
-    SHORT
-
-Otherwise:
-
-    NEUTRAL
-
-Make thresholds configurable.
-
-Do not claim that this strategy is profitable.
-
-The application should calculate whether it was profitable on the selected historical period.
-
-==================================================
-
-40. COMPARISON BASELINES
-
-==================================================
-
-Every ML strategy should be compared against simple baselines.
-
-At minimum:
-
-1. Buy and Hold
-
-2. Equal Weight
-
-3. Simple Momentum
-
-This prevents the ML model from receiving credit for performance that could have been obtained more simply.
-
-==================================================
-
-41. RESEARCH REPORT
-
-==================================================
-
-Generate an automated research report after each experiment.
-
-Report:
-
-Dataset
-
-Features
-
-Model
-
-Training period
-
-Validation period
-
-Test period
-
-Hyperparameters
-
-Prediction metrics
-
-Strategy metrics
-
-Risk metrics
-
-Transaction costs
-
-Drawdown
-
-Baseline comparison
-
-Limitations
-
-Save as:
-
-reports/{experiment_id}.md
-
-==================================================
-
-42. NO FABRICATION POLICY
-
-==================================================
-
-This is extremely important.
-
-Never fabricate:
-
-- market prices
-
-- historical returns
-
-- Sharpe ratios
-
-- model accuracy
-
-- profits
-
-- competition results
-
-- Harvard affiliation
-
-- Stanford affiliation
-
-- datasets
-
-- investors
-
-- users
-
-- production deployments
-
-If something has not actually been measured, label it:
-
-"Not yet measured"
-
-If using synthetic data, explicitly say:
-
-"Synthetic development data"
-
-If an external data provider is unavailable, do not pretend otherwise.
-
-==================================================
-
-43. IMPLEMENTATION STRATEGY
-
-==================================================
-
-Do NOT attempt to create everything as one giant code dump.
-
-Work incrementally.
-
-Phase 1:
-
-Repository structure
-
-Configuration
-
-Logging
-
-Core domain models
-
-Phase 2:
-
-Data ingestion
-
-Validation
-
-Synthetic data
-
-Phase 3:
-
-Feature engineering
-
-Mathematical engine
-
-Phase 4:
-
-ML engine
-
-Time-series validation
-
-Model registry
-
-Phase 5:
-
-Signal generation
-
-Backtesting
-
-Phase 6:
-
-Risk engine
-
-Portfolio optimization
-
-Phase 7:
-
-FastAPI
-
-Phase 8:
-
-React dashboard
-
-Phase 9:
-
-PostgreSQL
-
-Redis
-
-background jobs
-
-Phase 10:
-
-Docker
-
-GitHub Actions
-
-testing
-
-Phase 11:
-
-Documentation
-
-research notebooks
-
-demo experiment
-
-After every phase:
-
-- run tests
-
-- fix errors
-
-- update documentation
-
-- verify imports
-
-- verify type checking
-
-- verify the application still starts
-
-==================================================
-
-44. DEFINITION OF DONE
-
-==================================================
-
-STRATUM is complete only when:
-
-[ ] API starts successfully
-
-[ ] Frontend starts successfully
-
-[ ] PostgreSQL connects
-
-[ ] Redis connects
-
-[ ] Synthetic data pipeline works
-
-[ ] Feature pipeline works
-
-[ ] Mathematical engine passes tests
-
-[ ] ML model trains
-
-[ ] Walk-forward validation works
-
-[ ] Signals are generated
-
-[ ] Backtesting works
-
-[ ] Transaction costs are included
-
-[ ] Risk metrics work
-
-[ ] Portfolio optimization works
-
-[ ] Model registry works
-
-[ ] Experiment tracking works
-
-[ ] Dashboard displays results
-
-[ ] CLI works
-
-[ ] Docker Compose works
-
-[ ] GitHub Actions works
-
-[ ] Unit tests pass
-
-[ ] Integration tests pass
-
-[ ] Type checking passes
-
-[ ] Linting passes
-
-[ ] README is complete
-
-[ ] Mathematical documentation is complete
-
-[ ] No fabricated performance claims exist
-
-[ ] No secrets are committed
-
-==================================================
-
-45. FINAL OUTPUT
-
-==================================================
-
-At the end, provide:
-
-1. Complete repository tree
-
-2. Technology stack
-
-3. Architecture explanation
-
-4. Mathematical models implemented
-
-5. ML models implemented
-
-6. Backtesting methodology
-
-7. Risk methodology
-
-8. API endpoints
-
-9. Dashboard pages
-
-10. DevOps architecture
-
-11. How to run locally
-
-12. How to run tests
-
-13. Example experiment
-
-14. Known limitations
-
-15. Future roadmap
-
-Most importantly:
-
-Build the actual system.
-
-Do not merely describe how it could be built.
-
-When you encounter a design decision, choose a sensible implementation and continue.
-
-Prioritize:
-
-CORRECTNESS
-
-REPRODUCIBILITY
-
-MATHEMATICAL VALIDITY
-
-TESTABILITY
-
-ENGINEERING QUALITY
-
-over visual complexity or unnecessary features.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/ca43b8b0-6e3d-4247-8ad8-c5f0d91bfda4).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
 ```
+
+The CLI is intended to provide concise, human-readable research output.
+
+---
+
+# Research Notebooks
+
+The project can include focused research notebooks such as:
+
+```text
+01_data_exploration.ipynb
+02_feature_engineering.ipynb
+03_model_training.ipynb
+04_walk_forward_validation.ipynb
+05_backtesting.ipynb
+06_risk_analysis.ipynb
+07_portfolio_optimization.ipynb
+```
+
+The notebooks should call reusable QuantStrat package code rather than duplicate the application logic.
+
+---
+
+# Example Experiment Structure
+
+A complete experiment can be represented as:
+
+```text
+Experiment
+│
+├── Dataset
+│
+├── Feature Set
+│
+├── Model
+│
+├── Hyperparameters
+│
+├── Training Period
+│
+├── Validation Period
+│
+├── Test Period
+│
+├── Predictions
+│
+├── Signals
+│
+├── Portfolio
+│
+├── Backtest
+│
+├── Risk Report
+│
+└── Research Report
+```
+
+This creates a traceable chain from the original research hypothesis to the final evaluation.
+
+---
+
+# Reproducibility Checklist
+
+Before accepting a quantitative result, verify:
+
+```text
+[ ] Dataset identified
+[ ] Dataset period recorded
+[ ] Features versioned
+[ ] Lookback periods recorded
+[ ] No future information used
+[ ] Train/test periods separated
+[ ] Model version recorded
+[ ] Hyperparameters recorded
+[ ] Random seeds fixed
+[ ] Transaction costs specified
+[ ] Slippage specified
+[ ] Execution assumptions specified
+[ ] Baselines evaluated
+[ ] Risk metrics calculated
+[ ] Limitations documented
+```
+
+---
+
+# Research Roadmap
+
+Future development can extend QuantStrat with:
+
+### Advanced Models
+
+* XGBoost
+* LightGBM
+* temporal neural networks
+* transformers for time-series research
+
+### Advanced Portfolio Methods
+
+* Black-Litterman
+* factor models
+* hierarchical risk parity
+* robust optimization
+* CVaR optimization
+
+### Advanced Risk
+
+* stress testing
+* scenario analysis
+* regime detection
+* factor exposure
+* tail-risk analysis
+
+### Advanced Research
+
+* Bayesian models
+* probabilistic forecasting
+* causal inference experiments
+* regime-aware strategies
+* alternative data research
+
+### MLOps
+
+* MLflow
+* automated model promotion
+* model monitoring
+* dataset lineage
+* feature drift detection
+* prediction drift detection
+
+### Infrastructure
+
+* object storage
+* distributed workers
+* scheduled data pipelines
+* production monitoring
+* cloud deployment
+
+---
+
+# Design Principles
+
+QuantStrat follows several engineering rules:
+
+```text
+Correctness over complexity
+Reproducibility over convenience
+Evidence over assumptions
+Research over marketing
+Simple baselines before complex models
+Explicit assumptions over hidden behavior
+Testable components over giant scripts
+```
+
+The project intentionally avoids unnecessary complexity until there is a measurable reason to introduce it.
+
+---
+
+# Responsible Use
+
+QuantStrat is a **research and educational system**.
+
+Outputs should be interpreted as computational research results rather than guaranteed financial recommendations.
+
+Any live-market use should involve:
+
+* independent validation
+* appropriate data licensing
+* realistic execution modeling
+* risk controls
+* regulatory considerations
+* professional review
+
+---
+
+# License
+
+MIT License
+```
+
+or another license appropriate for the intended distribution model.
+
+---
+
+# Final Perspective
+
+QuantStrat is an attempt to treat quantitative finance as the intersection of several disciplines rather than as a single machine-learning problem.
+
+The central architecture is:
+
+$$
+\boxed{
+Data
+\rightarrow
+Mathematics
+\rightarrow
+Statistics
+\rightarrow
+Machine\ Learning
+\rightarrow
+Signals
+\rightarrow
+Portfolio
+\rightarrow
+Backtesting
+\rightarrow
+Risk
+}
+$$
+
+The goal is not to manufacture impressive performance numbers.
+
+The goal is to create a system in which quantitative ideas can be:
+
+**formulated → implemented → tested → challenged → reproduced → evaluated.**
+
+That is the foundation of QuantStrat.
+
+> **Layered Intelligence for Quantitative Decision Systems**
